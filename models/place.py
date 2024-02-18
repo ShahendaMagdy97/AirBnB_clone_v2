@@ -59,5 +59,5 @@ class Place(BaseModel, Base):
         @amenities.setter
         def amenities(self, amenity):
             """set linked Amenities"""
-            if type(amenity) == Amenity:
+            if isinstance(amenity, Amenity):
                 self.amenity_ids.append(amenity.id)

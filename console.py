@@ -114,38 +114,38 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, args):
-        """ Initiate an object of any Entity"""
+        """ Create an object of any class"""
         if not args:
-            print("** class Not Named **")
+            print("** class name missing **")
             return
 
-        args_drpdwn = args.split()
-        if args_drpdwn[0] not in HBNBCommand.classes:
-            print("** class Not Found **")
+        args_list = args.split()
+        if args_list[0] not in HBNBCommand.classes:
+            print("** class doesn't exist **")
             return
-        # Initiate State name="California"
-        # Initiate User email=1.1 pssw="medy"
+        # create State name="California"
+        # create User email=1.1 pwassword="aasdasd"
 
-        args_dicttt = {}
-        for attribute in args_drpdwn[1:]:
+        args_dict = {}
+        for attribute in args_list[1:]:
             if '=' in attribute:
-                atr_drpdwn = attribute.split("=")
-                if atr_drpdwn[1][0] == '"' and atr_drpdwn[1][-1] == '"':
-                    attr_value = atr_drpdwn[1].strip('"').replace('_', ' ')
-                elif atr_drpdwn[1].isdigit():
-                    attr_value = int(atr_drpdwn[1])
+                attr_list = attribute.split("=")
+                if attr_list[1][0] == '"' and attr_list[1][-1] == '"':
+                    attr_value = attr_list[1].strip('"').replace('_', ' ')
+                elif attr_list[1].isdigit():
+                    attr_value = int(attr_list[1])
                 else:
                     try:
-                        attr_value = float(atr_drpdwn[1])
+                        attr_value = float(attr_list[1])
                     except Exception:
                         continue
-                args_dicttt[atr_drpdwn[0]] = attr_value
-        if args_dicttt == {}:
-            nw_entity = HBNBCommand.classes[args_drpdwn[0]]()
+                args_dict[attr_list[0]] = attr_value
+        if args_dict == {}:
+            new_instance = HBNBCommand.classes[args_list[0]]()
         else:
-            nw_entity = HBNBCommand.classes[args_drpdwn[0]](**args_dicttt)
-        nw_entity.save()
-        print(nw_entity.id)
+            new_instance = HBNBCommand.classes[args_list[0]](**args_dict)
+        new_instance.save()
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
@@ -227,12 +227,12 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for q, w in storage.all(HBNBCommand.classes[args]).items():
-                if q.split('.')[0] == args:
-                    print_list.append(str(w))
+            for k, v in storage.all(HBNBCommand.classes[args]).items():
+                if k.split('.')[0] == args:
+                    print_list.append(str(v))
         else:
-            for q, w in storage.all().items():
-                print_list.append(str(w))
+            for k, v in storage.all().items():
+                print_list.append(str(v))
 
         print(print_list)
 
@@ -244,8 +244,8 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, args):
         """Count current number of class instances"""
         count = 0
-        for q, w in storage._FileStorage__objects.items():
-            if args == q.split('.')[0]:
+        for k, v in storage._FileStorage__objects.items():
+            if args == k.split('.')[0]:
                 count += 1
         print(count)
 
@@ -288,9 +288,9 @@ class HBNBCommand(cmd.Cmd):
         if '{' in args[2] and '}' in args[2] and type(eval(args[2])) is dict:
             kwargs = eval(args[2])
             args = []  # reformat kwargs into list, ex: [<name>, <value>, ...]
-            for q, w in kwargs.items():
-                args.append(q)
-                args.append(w)
+            for k, v in kwargs.items():
+                args.append(k)
+                args.append(v)
         else:  # isolate args
             args = args[2]
             if args and args[0] == '\"':  # check for quoted arg

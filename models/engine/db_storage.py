@@ -35,30 +35,20 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):
-        """Querey the current database"""
-        io_dictto = {}
+        """query on the current db"""
+        my_dict = {}
         if cls is None:
-            class_names = list(__classes.keys())
-            g = 0
-            while g < len(class_names):
-                etn = __classes[class_names[g]]
-                objs = self.__session.query(etn).all()
-                j = 0
-                while j < len(objs):
-                    obj = objs[j]
+            for cl in __classes.values():
+                objs = self.__session.query(cl).all()
+                for obj in objs:
                     key = obj.__class__.__name__ + '.' + obj.id
-                    io_dictto[key] = obj
-                    j += 1
-                g += 1
+                    my_dict[key] = obj
         else:
             objs = self.__session.query(cls).all()
-            g = 0
-            while g < len(objs):
-                obj = objs[g]
+            for obj in objs:
                 key = obj.__class__.__name__ + '.' + obj.id
-                io_dictto[key] = obj
-                g += 1
-        return io_dictto
+                my_dict[key] = obj
+        return my_dict
 
     def new(self, obj):
         """add the object to the current database"""
@@ -84,3 +74,7 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
         Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
         self.__session = Session()
+
+    def close(self):
+        """close method"""
+        self.__session.close()
